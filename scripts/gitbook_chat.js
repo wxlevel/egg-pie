@@ -133,7 +133,7 @@
             iframe.setAttribute("src", article.href)
             await waitFor(() => {
                 return iframe.$("h1") && iframe.$("h1").innerText == article.title
-            }, 5000);
+            }, 3000);
         } catch (error) {
             console.error("set article.href 出错 " + article.title + "error：" + error);
         }
@@ -142,24 +142,25 @@
         console.log("detail_hrefs.length: " + detail_hrefs.length);
 
         for (let index = 0; index < detail_hrefs.length; index++) {
-            let detail_href = detail_hrefs[index];
+            let detail_href = detail_hrefs[index].href;
             console.log("detail_hrefs index: " + index + " detail_href:" + detail_href);
             try {
                 iframe.setAttribute("src", detail_href);
                 await waitFor(() => {
                     return iframe.$("h2") && iframe.$("h2").innerText == article.title
-                }, 5000);
+                }, 3000);
             } catch (error) {
                 console.error("set detail.href 出错 " + article.title + "error：" + error);
             }
 
             await sleep(1000); // 等待script加载完
-
+            let file_name_prefix =  articleIndex + "_" + article.title;
+            let file_name = (detail_hrefs.length == 1) ? file_name_prefix : file_name_prefix + index;
             try {
-                downloadArticle(articleIndex + "_" + article.title + index);
+                downloadArticle(file_name);
             } catch (error) {
-                console.error("downloadArticle 出错 " + article.title + "error：" + error);
-                downloadArticle(articleIndex + "_" + article.title + index);
+                console.error("downloadArticle 出错 " + file_name + "error：" + error);
+                downloadArticle(file_name);
             }
 
         }
